@@ -1,12 +1,22 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { CatsController } from './cats/cats.controller';
-import { CatsService } from './cats/cats.service';
+import * as Nest from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 
-@Module({
-  imports: [],
-  controllers: [AppController, CatsController],
-  providers: [AppService, CatsService],
+import { CatsModule } from './cats/cats.module';
+
+import { AppController } from './app.controller';
+
+import { AppService } from './app.service';
+import { RolesGuard } from './shared/guards/roles.guard';
+
+@Nest.Module({
+    imports: [ CatsModule ],
+    controllers: [ AppController ],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard,
+        },
+    ],
 })
 export class AppModule {}
